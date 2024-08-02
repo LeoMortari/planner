@@ -1,0 +1,22 @@
+meta {
+  name: Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/trips/17fb25fa-67a8-4a2f-b2f6-1f594132862f
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "destination": "Rahim Kane",
+      "starts_at": "2024-07-11T14:49:27.040Z",
+      "ends_at": "2024-07-12T14:49:27.040Z",
+      "email_to_invite": [""],
+      "owner_name": "Fallon Irwin",
+      "owner_email": "habitant.morbi@aol.org"
+    }
+}
