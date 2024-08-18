@@ -1,0 +1,21 @@
+meta {
+  name: Confirm Participant
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/participants/{{id}}/confirm
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "test de nome"
+  }
+}
+
+vars:pre-request {
+  id: 9c25353f-cd2f-4a44-b4b6-d9b4ab00d5e1
+}

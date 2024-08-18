@@ -1,0 +1,24 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/trips
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "destination": "Rahim Kane",
+      "starts_at": "2024-07-11T14:49:27.040Z",
+      "ends_at": "2024-07-11T14:49:27.040Z",
+      "emails_to_invite": [
+        "test@test.com"
+      ],
+      "owner_name": "Fallon Irwin",
+      "owner_email": "habitant.morbi@aol.org"
+    }
+}

@@ -1,12 +1,14 @@
 package com.rockeseat.planner.trip;
 
-import com.rockeseat.planner.participant.ParticipantService;
+import com.rockeseat.planner.participant.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -70,5 +72,32 @@ public class TripController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/invite")
+    public ResponseEntity<ParticipantCreateResponse> inviteParticipant(@PathVariable UUID id, @RequestBody ParticipantRequestPayload payload) {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if (trip.isPresent()) {
+            Trip rawTrip = trip.get();
+
+            ParticipantCreateResponse participantResponse = this.participantService.registerParticipantToEvent(payload.email(), rawTrip);
+
+            if(rawTrip.getIsConfimed()) {
+                this.participantService.triggerConfirmationEmailToParticipant(payload.email());
+            }
+
+            return ResponseEntity.ok(participantResponse);
+
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<List<ParticipantData>> getParticipants(@PathVariable UUID id) {
+        List<ParticipantData> participants = this.participantService.getAllParticipantsFromEvent(id);
+
+        return ResponseEntity.ok(participants);
     }
 }

@@ -1,0 +1,21 @@
+meta {
+  name: Invite Participant
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/trips/{{id}}/invite
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "teste@gmail.com"
+  }
+}
+
+vars:pre-request {
+  id: ce434fde-eeeb-4be4-8618-09a96c322c1d
+}
