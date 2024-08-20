@@ -1,5 +1,8 @@
 package com.rockeseat.planner.trip;
 
+import com.rockeseat.planner.activities.ActivityRequestPayload;
+import com.rockeseat.planner.activities.ActivityResponse;
+import com.rockeseat.planner.activities.ActivityService;
 import com.rockeseat.planner.participant.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,9 @@ public class TripController {
 
     @Autowired
     private TripRepository tripRepository;
+
+    @Autowired
+    private ActivityService activityService;
 
     @PostMapping
     public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload) {
@@ -56,7 +62,7 @@ public class TripController {
     }
 
     @GetMapping("/{id}/confirm")
-    public ResponseEntity<Trip> updateTrip(@PathVariable UUID id) {
+    public ResponseEntity<Trip> confirmTrip(@PathVariable UUID id) {
         Optional<Trip> trip = this.tripRepository.findById(id);
 
         if (trip.isPresent()) {
@@ -99,5 +105,21 @@ public class TripController {
         List<ParticipantData> participants = this.participantService.getAllParticipantsFromEvent(id);
 
         return ResponseEntity.ok(participants);
+    }
+
+    @PostMapping("/{id}/activities")
+    public ResponseEntity<ActivityResponse> registerActivity(@PathVariable UUID id, @RequestBody ActivityRequestPayload payload) {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if (trip.isPresent()) {
+            Trip rawTrip = trip.get();
+
+            ActivityResponse activityResponse = this.activityService.saveActivity(payload, rawTrip);
+
+            return ResponseEntity.ok(activityResponse);
+
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }
