@@ -1,17 +1,18 @@
 package com.rockeseat.planner.trip;
 
-import com.rockeseat.planner.activities.ActivityData;
-import com.rockeseat.planner.activities.ActivityRequestPayload;
-import com.rockeseat.planner.activities.ActivityResponse;
-import com.rockeseat.planner.activities.ActivityService;
+import com.rockeseat.planner.activity.ActivityData;
+import com.rockeseat.planner.activity.ActivityRequestPayload;
+import com.rockeseat.planner.activity.ActivityResponse;
+import com.rockeseat.planner.activity.ActivityService;
+import com.rockeseat.planner.link.*;
 import com.rockeseat.planner.participant.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,14 +29,30 @@ public class TripController {
     @Autowired
     private ActivityService activityService;
 
+    @Autowired
+    private LinkService linkService;
+
     @PostMapping
     public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload) {
         Trip trip = new Trip(payload);
+        LocalDateTime startDate = LocalDateTime.parse(payload.starts_at(), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime endDate = LocalDateTime.parse(payload.ends_at(), DateTimeFormatter.ISO_DATE_TIME);
+
+        if(startDate.isAfter(endDate) || endDate.isBefore(startDate)) {
+            ResponseEntity.badRequest().body("A datas de viagens estão erradas");
+        }
 
         this.tripRepository.save(trip);
         this.participantService.registerParticipantsToEvent(payload.emails_to_invite(), trip);
 
         return ResponseEntity.ok(new TripCreateResponse(trip.getId()));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Trip>> getAllTrips() {
+        List<Trip> trips = this.tripRepository.findAll();
+
+        return ResponseEntity.ok(trips);
     }
 
     @GetMapping("/{id}")
@@ -129,5 +146,28 @@ public class TripController {
         List<ActivityData> activityDataList = this.activityService.getAllActivitiesFromId(id);
 
         return ResponseEntity.ok(activityDataList);
+    }
+
+    @PostMapping("/{id}/links")
+    public ResponseEntity<LinkResponse> registerLink(@PathVariable UUID id, @RequestBody LinkRequestPayload payload) {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if (trip.isPresent()) {
+            Trip rawTrip = trip.get();
+
+            LinkResponse linkResponse = this.linkService.saveLink(payload, rawTrip);
+
+            return ResponseEntity.ok(linkResponse);
+
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/links")
+    public ResponseEntity<List<LinkData>> getAllLinks(@PathVariable UUID id) {
+        List<LinkData> linkDataList = this.linkService.getAllActivitiesFromId(id);
+
+        return ResponseEntity.ok(linkDataList);
     }
 }
