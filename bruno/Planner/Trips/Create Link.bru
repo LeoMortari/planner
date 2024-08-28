@@ -1,0 +1,22 @@
+meta {
+  name: Create Link
+  type: http
+  seq: 9
+}
+
+post {
+  url: http://localhost:8080/trips/{{id}}/links
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Link de teste",
+    "url": "www.google.com"
+  }
+}
+
+vars:pre-request {
+  id: d3c1ebdc-f66f-4bb1-ac51-e84de481d972
+}

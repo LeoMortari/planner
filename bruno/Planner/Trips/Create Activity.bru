@@ -1,0 +1,22 @@
+meta {
+  name: Create Activity
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/trips/{{id}}/activities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Visita de teste",
+    "occours_at": "2024-07-12T14:49:27.040Z"
+  }
+}
+
+vars:pre-request {
+  id: 94234cd8-96df-4c16-b660-0465dd96352e
+}

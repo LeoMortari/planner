@@ -1,0 +1,22 @@
+meta {
+  name: Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/trips/5dff62d5-fcb5-48a2-aaa9-9893ba4f5b4f
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "destination": "France",
+      "starts_at": "2024-07-11T14:49:27.040Z",
+      "ends_at": "2024-07-11T14:49:27.040Z",
+      "email_to_invite": [""],
+      "owner_name": "Fallon Irwin",
+      "owner_email": "habitant.morbi@aol.org"
+    }
+}
