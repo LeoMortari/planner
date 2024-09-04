@@ -41,6 +41,9 @@ public class Trip {
     @Column(nullable = false, name = "owner_email")
     private String ownerEmail;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Participant> participants;
+
     public Trip(TripRequestPayload data){
         this.destination = data.destination();
         this.isConfimed = false;

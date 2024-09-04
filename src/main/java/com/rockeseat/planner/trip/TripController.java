@@ -35,14 +35,15 @@ public class TripController {
     @PostMapping
     public ResponseEntity<?> createTrip(@RequestBody TripRequestPayload payload) {
         Trip trip = new Trip(payload);
-        LocalDateTime startDate = LocalDateTime.parse(payload.starts_at(), DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime endDate = LocalDateTime.parse(payload.ends_at(), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime startDate = LocalDateTime.parse(payload.starts_at(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime endDate = LocalDateTime.parse(payload.ends_at(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
         if(startDate.isAfter(endDate) || endDate.isBefore(startDate)) {
             return ResponseEntity.badRequest().body("Start date and end date should be after end date and start date");
         }
 
         this.tripRepository.save(trip);
+
         this.participantService.registerParticipantsToEvent(payload.emails_to_invite(), trip);
 
         return ResponseEntity.ok(new TripCreateResponse(trip.getId()));

@@ -24,13 +24,30 @@ body:json {
 }
 
 script:pre-request {
-  const dayjs = require('dayjs')
-  
   const iso_format = "YYYY-MM-DDTHH:mm:ss"
   
+  function getDataFormatada(data) {
+    const ano = data.getFullYear();
+    const mes = (data.getMonth() + 1).toString().padStart(2, '0'); // Mês começa em 0
+    const dia = data.getDate().toString().padStart(2, '0');
+    const hora = data.getHours().toString().padStart(2, '0');
+    const minuto = data.getMinutes().toString().padStart(2, '0');
+    const segundo = data.getSeconds().toString().padStart(2, '0');
+  
+    return `${ano}-${mes}-${dia}T${hora}:${minuto}:${segundo}`;
+  }
+  
   const body = req.getBody()
-  const starts_at = dayjs().format(iso_format)
-  const ends_at = dayjs().add(1, 'day').format(iso_format)
+  
+  const date = new Date();
+  
+  const starts_at = getDataFormatada(date);
+  
+  const endDate = new Date(starts_at);
+  
+  endDate.setDate(date.getDate() + 1);
+  
+  const ends_at = getDataFormatada(endDate);
   
   req.setBody({...body, starts_at, ends_at})
 }

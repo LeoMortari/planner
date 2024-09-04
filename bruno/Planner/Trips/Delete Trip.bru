@@ -1,0 +1,11 @@
+meta {
+  name: Delete Trip
+  type: http
+  seq: 12
+}
+
+delete {
+  url: http://localhost:8080/trips/{{tripId}}
+  body: none
+  auth: none
+}
