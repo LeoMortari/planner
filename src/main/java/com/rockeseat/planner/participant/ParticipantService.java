@@ -46,4 +46,10 @@ public class ParticipantService {
         )).toList();
     }
 
+    public void removeAllParticipants(UUID tripId){
+        List<Participant> participants = this.getAllParticipantsFromEvent(tripId).stream().map(people -> new Participant(people.id(), people.name(), people.email(), people.isConfirmed())).toList();
+
+        this.participantRepository.deleteAll(participants);
+    }
+
 }

@@ -33,13 +33,13 @@ public class TripController {
     private LinkService linkService;
 
     @PostMapping
-    public ResponseEntity<TripCreateResponse> createTrip(@RequestBody TripRequestPayload payload) {
+    public ResponseEntity<?> createTrip(@RequestBody TripRequestPayload payload) {
         Trip trip = new Trip(payload);
         LocalDateTime startDate = LocalDateTime.parse(payload.starts_at(), DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime endDate = LocalDateTime.parse(payload.ends_at(), DateTimeFormatter.ISO_DATE_TIME);
 
         if(startDate.isAfter(endDate) || endDate.isBefore(startDate)) {
-            ResponseEntity.badRequest().body("A datas de viagens estão erradas");
+            return ResponseEntity.badRequest().body("Start date and end date should be after end date and start date");
         }
 
         this.tripRepository.save(trip);
@@ -74,6 +74,23 @@ public class TripController {
             rawTrip.setDestination(payload.destination());
 
             return ResponseEntity.ok(rawTrip);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTrip(@PathVariable UUID id) {
+        Optional<Trip> trip = this.tripRepository.findById(id);
+
+        if (trip.isPresent()) {
+            Trip rawTrip = trip.get();
+
+            this.participantService.removeAllParticipants(rawTrip.getId());
+
+            this.tripRepository.delete(trip.get());
+
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.notFound().build();

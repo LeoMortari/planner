@@ -33,6 +33,13 @@ public class Participant {
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
+    public Participant(UUID id, String name, String email, Boolean isConfimed){
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.isConfimed = isConfimed;
+    }
+
     public Participant(String email, Trip trip) {
         this.email = email;
         this.trip = trip;

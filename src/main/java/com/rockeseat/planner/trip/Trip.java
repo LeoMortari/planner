@@ -1,5 +1,6 @@
 package com.rockeseat.planner.trip;
 
+import com.rockeseat.planner.participant.Participant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
